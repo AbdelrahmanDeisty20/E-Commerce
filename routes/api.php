@@ -28,7 +28,7 @@ Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
 });
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
-Route::middleware('auth:sanctum', 'permission', 'verified')->group(function () {
+Route::middleware(['auth:sanctum', 'permission', 'verified'])->group(function () {
     Route::get('user', [AuthController::class, 'user']);
     Route::get('/logout', [AuthController::class, 'logout']);
     Route::apiResource('products', ProductController::class);
@@ -38,9 +38,9 @@ Route::middleware('auth:sanctum', 'permission', 'verified')->group(function () {
     Route::delete('cart/{rowId}', [CartController::class, 'removeCartItem']);
     Route::post('cart/clear', [CartController::class, 'clearCart']);
     Route::apiResource('categories', CategoryController::class);
-    Route::post('/orders', [OrderController::class, 'createOrder']);  // إنشاء الطلب
-    Route::get('/orders', [OrderController::class, 'getUserOrders']);  // استرجاع الطلبات
-    Route::get('/orders/{id}', [OrderController::class, 'getOrderById']);  // استرجاع تفاصيل الطلب
+    Route::post('/orders', [OrderController::class, 'createOrder']);
+    Route::get('/orders', [OrderController::class, 'getUserOrders']);
+    Route::get('/orders/{id}', [OrderController::class, 'getOrderById']);
     Route::put('/orders/{id}/status', [OrderController::class, 'updateOrderStatus']);
 });
 Route::get('/paypal/success', [PayPalController::class, 'paymentSuccess'])->name('paypal.success');
