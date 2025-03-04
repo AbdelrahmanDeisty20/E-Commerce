@@ -16,6 +16,6 @@ class UserSeedr extends Seeder
     public function run()
     {
         $user = User::find(1);
-        $user->assignRole('user');
+        $user->assignRole('customer');
     }
 }
