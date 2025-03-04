@@ -17,13 +17,15 @@ class AutoCheckPermission
      */
     public function handle(Request $request, Closure $next)
     {
-        $routeName = $request->route()->getName();
-        $permission = Permission::whereRaw("FIND_IN_SET(?, routes)", [$routeName])->first();
-        if (!$permission) {
-            return response()->json(['message' => 'Access denied. Route permission not found.'], 403);
-        }
-        if (!$request->user() || !$request->user()->can($permission->name)) {
-            return response()->json(['message' => 'You do not have permission to access this route.'], 403);
+        $routeName= $request->route()->getName();
+        $permission = Permission::whereRaw("FIND_IN_SET('$routeName',routes)")->first();
+        if($permission)
+        {
+            if(!$request->user()->can($permission->name))
+            {
+                return response()->json(['message'=>'You do not have permission to access this route'],403);
+
+            }
         }
         return $next($request);
     }
