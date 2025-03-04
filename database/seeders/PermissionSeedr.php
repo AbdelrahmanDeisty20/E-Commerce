@@ -16,33 +16,25 @@ class PermissionSeedr extends Seeder
      * @return void
      */
     public function run()
-    {app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
-
-        // إنشاء الأدوار
+    {
+        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
         $adminRole = Role::firstOrCreate(['name' => 'admin']);
-        $userRole = Role::firstOrCreate(['name' => 'user']);
-
-        // إنشاء الصلاحيات وربطها بالروتات
+        $userRole = Role::firstOrCreate(['name' => 'customer']);
         $permissions = [
-            ['name' => 'manage products', 'routes' => 'products.store,products.update,products.destroy'],
-            ['name' => 'manage carts', 'routes' => 'carts.store,carts.update,carts.destroy'],
-            ['name' => 'view products', 'routes' => 'products.index'],
-            ['name' => 'manage orders', 'routes' => 'orders.store,orders.update,orders.destroy'],
-            ['name' => 'view orders', 'routes' => 'orders.index'],
-            ['name' => 'view carts', 'routes' => 'carts.index'],
+            'manage products' => 'products.store,products.update,products.destroy',
+            'manage carts' => 'carts.store,carts.update,carts.destroy',
+            'view products' => 'products.index',
+            'manage orders' => 'orders.store,orders.update,orders.destroy',
+            'view orders' => 'orders.index',
+            'view carts' => 'carts.index',
         ];
-
-        foreach ($permissions as $perm) {
-            $permission = Permission::firstOrCreate(['name' => $perm['name']]);
-            DB::table('permissions')
-                ->where('id', $permission->id)
-                ->update(['routes' => $perm['routes']]);
-
-            // إعطاء كل صلاحية للدور المناسب
-            if (in_array($perm['name'], ['manage products', 'manage orders','manage carts'])) {
-                $adminRole->givePermissionTo($perm['name']);
+        foreach ($permissions as $permissionName => $routes) {
+            $permission = Permission::firstOrCreate(['name' => $permissionName]);
+            DB::table('permissions')->where('id', $permission->id)->update(['routes' => $routes]);
+            if (in_array($permissionName, ['manage products', 'manage orders', 'manage carts'])) {
+                $adminRole->givePermissionTo($permission);
             } else {
-                $userRole->givePermissionTo($perm['name']);
+                $userRole->givePermissionTo($permission);
             }
         }
     }
