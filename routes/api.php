@@ -44,4 +44,5 @@ Route::middleware('auth:sanctum', 'permission', 'verified')->group(function () {
     Route::put('/orders/{id}/status', [OrderController::class, 'updateOrderStatus']);
 });
 Route::get('/paypal/success', [PayPalController::class, 'paymentSuccess'])->name('paypal.success');
-    Route::get('/paypal/cancel', [PayPalController::class, 'paymentCancel'])->name('paypal.cancel');
+Route::get('/paypal/cancel', [PayPalController::class, 'paymentCancel'])->name('paypal.cancel');
+
